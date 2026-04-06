@@ -1,0 +1,110 @@
+/* Deep Blue Background Theme */
+.registration-wrapper {
+  background: #0f172a; /* Dark Navy */
+  background-image: radial-gradient(circle at 20% 30%, #1e40af 0%, transparent 40%),
+                    radial-gradient(circle at 80% 70%, #1e3a8a 0%, transparent 40%);
+  min-height: 100vh;
+}
+
+/* Gradient Sidebar */
+.bg-gradient-blue {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+/* Card Styling */
+.card {
+  border-radius: 20px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Input Styles */
+.form-control, .form-select {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.x-small {
+  font-size: 0.75rem;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.5rem !important;
+  }
+}
+
+
+/* Animation for Table Rows */
+.table-row-animate {
+  animation: slideIn 0.3s ease-out;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Input Group Styles */
+.custom-input-group .input-group-text {
+  background-color: transparent;
+  border-right: none;
+  color: #6366f1; /* Indigo/Blue Icon */
+}
+
+.custom-input-group .form-control {
+  border-left: none;
+}
+
+/* Focused State Event */
+.custom-input-group:focus-within .input-group-text {
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+/* Grid Input Styling */
+.grid-input {
+  background-color: white !important;
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+
+.grid-input:focus {
+  border-color: #cbd5e1;
+  box-shadow: none;
+  background-color: #f8fafc !important;
+}
+
+/* Hover Lift Effect for Button */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+.icon-circle {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
