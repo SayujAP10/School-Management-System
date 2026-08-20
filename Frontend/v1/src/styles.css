@@ -1,0 +1,142 @@
+:root {
+  --primary-navy: #0d4a8a;
+  --mid-blue: #1565c0;
+  --bright-blue: #1976d2;
+  --deep-blue: #0a3d6b;
+  --gold-accent: #FFD54F;
+  --soft-gold: #ffe082;
+  --mint-green: #81c784;
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.25);
+  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  color: #2c3e50;
+  background-color: #f4f7fe;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(13, 74, 138, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(21, 101, 192, 0.4);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(21, 101, 192, 0.7);
+}
+
+/* Global Keyframe Animations */
+@keyframes twinkle {
+  0% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.2; transform: scale(0.8); }
+}
+
+@keyframes floatCloud {
+  0% { transform: translateX(-200px); }
+  100% { transform: translateX(110vw); }
+}
+
+@keyframes waveHand {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(20deg); }
+  75% { transform: rotate(-15deg); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(255, 213, 79, 0.5); }
+  70% { box-shadow: 0 0 0 15px rgba(255, 213, 79, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 213, 79, 0); }
+}
+
+/* Custom Premium Glowing Loader */
+.custom-glow-loader {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 213, 79, 0.25);
+  border-radius: 50%;
+  border-top-color: #FFD54F;
+  border-right-color: #FFD54F;
+  animation: glowSpin 0.75s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+  vertical-align: middle;
+}
+
+.custom-glow-loader-lg {
+  width: 52px;
+  height: 52px;
+  border-width: 4px;
+}
+
+@keyframes glowSpin {
+  0% { transform: rotate(0deg); box-shadow: 0 0 5px rgba(255, 213, 79, 0.2); }
+  50% { box-shadow: 0 0 18px rgba(255, 213, 79, 0.8); }
+  100% { transform: rotate(360deg); box-shadow: 0 0 5px rgba(255, 213, 79, 0.2); }
+}
+
+/* Global Button Loading State to Prevent Double Clicks */
+button[disabled], .btn:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.75 !important;
+  pointer-events: none !important;
+}
+
+/* Fullscreen Glassmorphism Loader Overlay */
+.global-custom-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 25, 47, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fix Browser Autofill / Auto-Suggestion White Box & Color Strikethrough Bug */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff !important;
+  transition: background-color 999999s ease-in-out 0s !important;
+  background: transparent !important;
+}
+
+input:autofill,
+select:autofill,
+textarea:autofill {
+  color: #ffffff !important;
+  background: transparent !important;
+}

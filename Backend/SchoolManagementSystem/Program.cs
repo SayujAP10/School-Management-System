@@ -11,8 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase")));
 
-//add dependency injection for student service
+//add dependency injection for services
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ITeacherService, TeacherService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 // Configure CORS to allow requests from the Angular frontend
 builder.Services.AddCors(options =>
@@ -62,5 +64,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", () => Results.Ok(new { message = "School Management System API is running!", swaggerDoc = "/openapi/v1.json" }));
 
 app.Run();

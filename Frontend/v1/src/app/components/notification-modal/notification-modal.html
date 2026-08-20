@@ -1,0 +1,62 @@
+@if (state().isOpen) {
+  <div class="notification-overlay d-flex align-items-center justify-content-center p-3" (click)="onBackdropClick($event)">
+    <div class="glass-notification-card rounded-4 p-4 shadow-2xl animate-pop-in" (click)="$event.stopPropagation()">
+      
+      <!-- Top Bar: Icon Badge & Close Button -->
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="modal-icon-badge" [class.badge-error]="state().type === 'error'" [class.badge-success]="state().type === 'success'" [class.badge-warning]="state().type === 'warning'">
+          @if (state().type === 'error') {
+            <i class="bi bi-exclamation-triangle-fill text-warning fs-3"></i>
+          } @else if (state().type === 'success') {
+            <i class="bi bi-check-circle-fill text-success fs-3"></i>
+          } @else {
+            <i class="bi bi-info-circle-fill text-warning fs-3"></i>
+          }
+        </div>
+        <button type="button" class="btn-close-modal border-0 bg-transparent text-white" (click)="close()" title="Close">
+          <i class="bi bi-x-lg text-white"></i>
+        </button>
+      </div>
+
+      <!-- Header Title -->
+      <h5 class="fw-bold text-white mb-2 fs-5">{{ state().title }}</h5>
+      
+      <!-- Message String -->
+      @if (state().message) {
+        <p class="text-white-75 small mb-3">{{ state().message }}</p>
+      }
+
+      <!-- Bulleted Error List -->
+      @if (state().errorsList && state().errorsList!.length > 0) {
+        <div class="errors-list-box p-3 rounded-3 mb-4">
+          @if (state().errorsList!.length > 1) {
+            <div class="small fw-bold text-gold mb-2 d-flex align-items-center gap-1">
+              <i class="bi bi-shield-exclamation text-warning"></i>
+              Please correct the following:
+            </div>
+          }
+          <ul class="mb-0 ps-0 list-unstyled">
+            @for (err of state().errorsList; track err) {
+              <li class="mb-2 d-flex align-items-start">
+                <i class="bi bi-exclamation-circle-fill text-warning me-2 mt-1 flex-shrink-0"></i>
+                <span class="error-item-text">{{ err }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Action Footer / Close Button -->
+      <div class="d-flex justify-content-end mt-3">
+        <button type="button" class="btn btn-close-action rounded-pill px-4 py-2 fw-bold" (click)="close()">
+          @if (state().type === 'success') {
+            Continue
+          } @else {
+            Dismiss & Fix
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

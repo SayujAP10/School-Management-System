@@ -1,0 +1,389 @@
+<div class="page">
+  @if (isBrowser) {
+    <div class="stars">
+      @for (s of stars(); track $index) {
+        <div class="star" [ngStyle]="s"></div>
+      }
+    </div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+  }
+
+  <!-- Interactive SVG School Ground Scenery -->
+  <svg
+    class="scene"
+    viewBox="0 0 1440 200"
+    preserveAspectRatio="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style="pointer-events: none"
+  >
+    <path
+      d="M0,120 Q200,70 400,100 Q600,130 800,90 Q1000,50 1200,85 L1440,80 L1440,200 L0,200 Z"
+      fill="rgba(255,255,255,0.07)"
+    />
+    <rect x="40" y="95" width="100" height="70" rx="4" fill="rgba(255,255,255,0.1)" />
+    <rect x="35" y="83" width="110" height="16" rx="3" fill="rgba(255,255,255,0.18)" />
+    <text
+      x="90"
+      y="96"
+      fill="rgba(255,213,79,0.9)"
+      font-size="10"
+      text-anchor="middle"
+      font-family="Nunito,sans-serif"
+      font-weight="800"
+    >
+      AMHSS ACADEMY
+    </text>
+    <rect x="52" y="105" width="22" height="18" rx="2" fill="rgba(255,213,79,0.2)" />
+    <rect x="82" y="105" width="22" height="18" rx="2" fill="rgba(255,213,79,0.2)" />
+    <rect x="112" y="105" width="22" height="18" rx="2" fill="rgba(255,213,79,0.2)" />
+
+    <g
+      class="student-group"
+      style="pointer-events: all; cursor: pointer;"
+      [class.waving]="wavingStudent === 'reg_s1'"
+      (click)="onStudentClick('reg_s1')"
+    >
+      <circle cx="220" cy="118" r="12" fill="rgba(255,213,79,0.7)" />
+      <rect x="210" y="130" width="20" height="28" rx="4" fill="rgba(100,181,246,0.5)" />
+      <rect x="198" y="138" width="28" height="18" rx="2" fill="rgba(255,255,255,0.4)" />
+    </g>
+  </svg>
+
+  <div class="registration-container">
+    <div class="glass-card shadow-2xl overflow-hidden">
+      <div class="row g-0">
+        
+        <!-- Left Side Banner -->
+        <div class="col-lg-4 d-none d-lg-flex flex-column justify-content-between p-5 banner-side text-white">
+          <div>
+            <div class="brand-badge mb-4">
+              <i class="bi bi-mortarboard-fill me-2 fs-4 text-warning"></i>
+              <span class="fw-bold tracking-wider">ACADEMIC PORTAL</span>
+            </div>
+            <h2 class="display-6 fw-extrabold text-white mb-3">Begin Your Journey</h2>
+            <p class="text-white-50 leading-relaxed small">
+              Register your profile to access official records, course management, and join our academy community.
+            </p>
+          </div>
+
+          <div class="portal-features mt-4">
+            <div class="feature-item d-flex align-items-center mb-3">
+              <div class="icon-chip me-3"><i class="bi bi-shield-check"></i></div>
+              <div>
+                <h6 class="mb-0 fw-bold text-warning">Secure Data Protection</h6>
+                <small class="text-white-50">256-Bit Encrypted Profiles</small>
+              </div>
+            </div>
+            <div class="feature-item d-flex align-items-center mb-3">
+              <div class="icon-chip me-3"><i class="bi bi-journal-check"></i></div>
+              <div>
+                <h6 class="mb-0 fw-bold text-warning">Instant Academic Sync</h6>
+                <small class="text-white-50">Automated Grade Tracking</small>
+              </div>
+            </div>
+            <div class="feature-item d-flex align-items-center">
+              <div class="icon-chip me-3"><i class="bi bi-patch-check-fill"></i></div>
+              <div>
+                <h6 class="mb-0 fw-bold text-warning">Digital Verification</h6>
+                <small class="text-white-50">Immediate Portal Access</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="banner-footer pt-4 border-top border-white-10 text-center">
+            <p class="small text-white-50 mb-0">Already registered?</p>
+            <a routerLink="/login" class="btn btn-outline-light rounded-pill btn-sm px-4 mt-2 font-weight-bold">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Portal
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Side Form -->
+        <div class="col-lg-8 p-4 p-md-5 form-side">
+          
+          <!-- Role Switcher Tabs -->
+          <div class="d-flex justify-content-center mb-4">
+            <div class="btn-group bg-dark-soft p-1 rounded-pill border border-white-10">
+              <button
+                type="button"
+                class="btn rounded-pill px-4 py-2 fw-bold text-white transition-all"
+                [class.btn-warning]="selectedRole() === 'Student'"
+                [class.btn-dark]="selectedRole() !== 'Student'"
+                (click)="toggleRole('Student')"
+              >
+                <i class="bi bi-mortarboard-fill me-2"></i> Student Registration
+              </button>
+              <button
+                type="button"
+                class="btn rounded-pill px-4 py-2 fw-bold text-white transition-all"
+                [class.btn-warning]="selectedRole() === 'Teacher'"
+                [class.btn-dark]="selectedRole() !== 'Teacher'"
+                (click)="toggleRole('Teacher')"
+              >
+                <i class="bi bi-person-workspace me-2"></i> Teacher Registration
+              </button>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center gap-3">
+              <div class="brand-mini-logo d-none d-sm-block">
+                <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M32 4L6 16V30C6 46.5 17 57.5 32 60C47 57.5 58 46.5 58 30V16L32 4Z" fill="url(#regShieldGrad)" stroke="rgba(255,213,79,0.5)" stroke-width="2"/>
+                  <path d="M32 18L18 25L32 32L46 25L32 18Z" fill="#FFD54F"/>
+                  <defs>
+                    <linearGradient id="regShieldGrad" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#1A237E"/>
+                      <stop offset="1" stop-color="#0D47A1"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <div>
+                <span class="badge bg-gold-soft text-gold px-3 py-2 rounded-pill fw-bold mb-1">
+                  <i class="bi bi-person-plus-fill me-1"></i> 2026 Academic Enrollment
+                </span>
+                <h2 class="fw-extrabold text-white mb-0">Create {{ selectedRole() }} Profile</h2>
+              </div>
+            </div>
+            <a routerLink="/login" class="d-lg-none btn btn-outline-light rounded-pill btn-sm">
+              Login <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+
+          <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+            <div class="row g-3">
+              
+              <!-- First Name -->
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-white-75">First Name <span class="text-warning">*</span></label>
+                <div class="input-group custom-input-group">
+                  <span class="input-group-text"><i class="bi bi-person-fill text-warning"></i></span>
+                  <input type="text" formControlName="std_f_name" class="form-control" placeholder="First Name">
+                </div>
+                @if (isSubmitted && f['std_f_name'].errors) {
+                  <small class="text-warning-soft mt-1 d-block">First Name is required.</small>
+                }
+              </div>
+
+              <!-- Last Name -->
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-white-75">Last Name <span class="text-warning">*</span></label>
+                <div class="input-group custom-input-group">
+                  <span class="input-group-text"><i class="bi bi-person-badge-fill text-warning"></i></span>
+                  <input type="text" formControlName="std_l_name" class="form-control" placeholder="Last Name">
+                </div>
+                @if (isSubmitted && f['std_l_name'].errors) {
+                  <small class="text-warning-soft mt-1 d-block">Last Name is required.</small>
+                }
+              </div>
+
+              <!-- Single Custom Reusable Date of Birth Component -->
+              <div class="col-md-6 position-relative">
+                <label class="form-label small fw-bold text-white-75">Date of Birth <span class="text-warning">*</span></label>
+                <app-custom-date-picker
+                  formControlName="std_dob"
+                  placeholder="19-Dec-2000"
+                  (dateSelected)="onDobSelected($event)"
+                ></app-custom-date-picker>
+                @if (isSubmitted && f['std_dob'].errors) {
+                  <small class="text-warning-soft mt-1 d-block">Date of Birth is required.</small>
+                }
+              </div>
+
+              <!-- Gender -->
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-white-75">Gender <span class="text-warning">*</span></label>
+                <div class="input-group custom-input-group">
+                  <span class="input-group-text"><i class="bi bi-gender-ambiguous text-warning"></i></span>
+                  <select formControlName="std_gender" class="form-select gender-select-styled">
+                    <option value="">Select Gender</option>
+                    <option value="Male">👨 Male</option>
+                    <option value="Female">👩 Female</option>
+                    <option value="Other">🧑 Other</option>
+                  </select>
+                </div>
+                @if (isSubmitted && f['std_gender'].errors) {
+                  <small class="text-warning-soft mt-1 d-block">Gender is required.</small>
+                }
+              </div>
+
+              <!-- Phone Number -->
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-white-75">Phone Number <span class="text-warning">*</span></label>
+                <div class="input-group custom-input-group">
+                  <span class="input-group-text"><i class="bi bi-telephone-fill text-warning"></i></span>
+                  <input
+                    type="text"
+                    formControlName="std_phno"
+                    class="form-control"
+                    placeholder="10-digit Mobile"
+                    maxlength="10"
+                    (input)="onPhoneInput($event)"
+                  >
+                </div>
+                @if (isSubmitted && f['std_phno'].errors) {
+                  <small class="text-warning-soft mt-1 d-block">Exactly 10-digit number required.</small>
+                }
+              </div>
+
+              <!-- Username / Email -->
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-white-75">Official Email <span class="text-warning">*</span></label>
+                <div class="input-group custom-input-group">
+                  <span class="input-group-text"><i class="bi bi-envelope-at-fill text-warning"></i></span>
+                  <input type="email" formControlName="std_email_id" class="form-control" [placeholder]="selectedRole() === 'Teacher' ? 'teacher@school.com' : 'student@school.com'">
+                </div>
+                @if (isSubmitted && f['std_email_id'].errors) {
+                  <small class="text-warning-soft mt-1 d-block">Valid email is required.</small>
+                }
+              </div>
+
+              <!-- Password -->
+              <div class="col-12">
+                <label class="form-label small fw-bold text-white-75">Account Password <span class="text-warning">*</span></label>
+                <div class="input-group custom-input-group position-relative">
+                  <span class="input-group-text"><i class="bi bi-lock-fill text-warning"></i></span>
+                  <input
+                    [type]="showPassword() ? 'text' : 'password'"
+                    formControlName="std_usr_paswrd"
+                    class="form-control pe-5"
+                    placeholder="Min. 6 characters"
+                  >
+                  <button
+                    type="button"
+                    class="btn-toggle-eye border-0 bg-transparent text-white-50 position-absolute end-0 top-50 translate-middle-y me-3"
+                    (click)="togglePasswordVisibility()"
+                    title="Toggle Password Visibility"
+                    style="z-index: 10;"
+                  >
+                    <i [class]="showPassword() ? 'bi bi-eye-slash-fill text-warning' : 'bi bi-eye-fill'"></i>
+                  </button>
+                </div>
+                @if (isSubmitted && f['std_usr_paswrd'].errors) {
+                  <small class="text-warning-soft mt-1 d-block">Min. 6 characters password required.</small>
+                }
+              </div>
+
+              <!-- TEACHER SPECIFIC FIELDS -->
+              @if (selectedRole() === 'Teacher') {
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-white-75">Department <span class="text-warning">*</span></label>
+                  <div class="input-group custom-input-group">
+                    <span class="input-group-text"><i class="bi bi-building text-warning"></i></span>
+                    <input type="text" formControlName="tch_department" class="form-control" placeholder="e.g. Science / Mathematics">
+                  </div>
+                  @if (isSubmitted && f['tch_department'].errors) {
+                    <small class="text-warning-soft mt-1 d-block">Department is required.</small>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-white-75">Subject Specialization <span class="text-warning">*</span></label>
+                  <div class="input-group custom-input-group">
+                    <span class="input-group-text"><i class="bi bi-journal-bookmark-fill text-warning"></i></span>
+                    <input type="text" formControlName="tch_subject_spec" class="form-control" placeholder="e.g. Physics / Algebra">
+                  </div>
+                  @if (isSubmitted && f['tch_subject_spec'].errors) {
+                    <small class="text-warning-soft mt-1 d-block">Subject Specialization is required.</small>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-white-75">Highest Qualification <span class="text-warning">*</span></label>
+                  <div class="input-group custom-input-group">
+                    <span class="input-group-text"><i class="bi bi-award-fill text-warning"></i></span>
+                    <input type="text" formControlName="tch_qualification" class="form-control" placeholder="e.g. M.Sc / M.Ed / Ph.D">
+                  </div>
+                  @if (isSubmitted && f['tch_qualification'].errors) {
+                    <small class="text-warning-soft mt-1 d-block">Qualification is required.</small>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-white-75">Years of Experience</label>
+                  <div class="input-group custom-input-group">
+                    <span class="input-group-text"><i class="bi bi-briefcase-fill text-warning"></i></span>
+                    <input type="number" formControlName="tch_experience_yrs" class="form-control" placeholder="e.g. 5" min="0">
+                  </div>
+                </div>
+              }
+
+            </div>
+
+            <!-- STUDENT QUALIFICATIONS SECTION -->
+            @if (selectedRole() === 'Student') {
+              <div class="mt-4 qualification-box p-4 rounded-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <h6 class="fw-bold text-gold mb-0">
+                      <i class="bi bi-award-fill text-warning me-2"></i>Academic Qualifications
+                    </h6>
+                    <small class="text-white-50">Add at least one course qualification</small>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-gradient-sm rounded-pill px-3 shadow-sm"
+                    (click)="addQualification()"
+                  >
+                    <i class="bi bi-plus-circle me-1"></i> Add Course
+                  </button>
+                </div>
+
+                <div formArrayName="qualifications">
+                  @for (qual of qualifications.controls; track $index; let i = $index) {
+                    <div [formGroupName]="i" class="qual-row p-3 mb-2 rounded-3 border d-flex flex-column gap-1">
+                      <div class="d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <span class="badge bg-gold-soft text-gold me-1">#{{ i + 1 }}</span>
+                        <div class="flex-grow-1">
+                          <input type="text" formControlName="course_name" class="form-control form-control-sm dark-sub-input" placeholder="Course Name (e.g. 10th Standard / SSLC)">
+                        </div>
+                        <div style="width: 130px;">
+                          <input type="text" formControlName="year_of_pass" class="form-control form-control-sm dark-sub-input" placeholder="Year (2024)">
+                        </div>
+                        <div style="width: 110px;">
+                          <input type="text" formControlName="percentage" class="form-control form-control-sm dark-sub-input" placeholder="Pass %">
+                        </div>
+                        <div>
+                          <button type="button" class="btn btn-outline-danger btn-sm border-0 rounded-circle" (click)="removeQualification(i)" title="Remove Course">
+                            <i class="bi bi-trash-fill text-danger-soft"></i>
+                          </button>
+                        </div>
+                      </div>
+                      @if (isSubmitted && qual.invalid) {
+                        <small class="text-warning-soft mt-1">Please enter Course Name, 4-digit Year (e.g. 2024), and Pass % (0-100).</small>
+                      }
+                    </div>
+                  }
+                </div>
+                @if (isSubmitted && qualifications.length === 0) {
+                  <small class="text-warning-soft d-block mt-2">Please add at least one qualification record.</small>
+                }
+              </div>
+            }
+
+            <!-- Submit Button -->
+            <div class="mt-4 d-grid">
+              <button
+                type="submit"
+                class="btn btn-submit rounded-pill py-3 fw-extrabold shadow-lg d-flex align-items-center justify-content-center gap-2"
+                [disabled]="isLoading()"
+              >
+                @if (isLoading()) {
+                  <span class="custom-glow-loader me-2"></span>
+                  <span>Registering {{ selectedRole() }} Profile...</span>
+                } @else {
+                  <i class="bi bi-check-circle-fill me-1"></i>
+                  <span>Complete {{ selectedRole() }} Registration</span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace SchoolManagementSystem
 {
@@ -9,5 +9,7 @@ namespace SchoolManagementSystem
         }
         public DbSet<Models.Student> Student { get; set; }
         public DbSet<Models.Qualification> Qualification { get; set; }
+        public DbSet<Models.Teacher> Teacher { get; set; }
+        public DbSet<Models.Admin> Admin { get; set; }
     }
 }

@@ -1,0 +1,109 @@
+<div class="position-relative w-100">
+  <div class="input-group custom-input-group position-relative" (click)="toggleDatePickerPopover()" style="cursor: pointer;">
+    <span class="input-group-text"><i class="bi bi-calendar-event-fill text-warning"></i></span>
+    <input
+      type="text"
+      readonly
+      class="form-control bg-transparent text-white border-0 cursor-pointer"
+      [placeholder]="placeholder"
+      [value]="formattedDobDisplay"
+    >
+    @if (selectedDayName) {
+      <span class="day-badge me-2">{{ selectedDayName }}</span>
+    }
+  </div>
+
+  <!-- Custom Date Picker Popover Modal -->
+  @if (showDatePickerPopover) {
+    <div class="custom-datepicker-popover shadow-2xl p-3 rounded-4 mt-2 position-absolute start-0 w-100 z-3">
+      
+      <!-- Header Tabs & Close -->
+      <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-white-10">
+        <div class="d-flex gap-1 align-items-center">
+          <button type="button" class="btn btn-xs" [class.btn-warning]="pickerView === 'year'" [class.btn-outline-light]="pickerView !== 'year'" (click)="pickerView = 'year'">
+            {{ pickerYear || 'Year' }}
+          </button>
+          <button type="button" class="btn btn-xs" [class.btn-warning]="pickerView === 'month'" [class.btn-outline-light]="pickerView !== 'month'" (click)="pickerView = 'month'">
+            {{ shortMonthsList[pickerMonth] }}
+          </button>
+          @if (pickerDay) {
+            <button type="button" class="btn btn-xs btn-warning" (click)="pickerView = 'day'">
+              Day {{ pickerDay }}
+            </button>
+          }
+        </div>
+        <button type="button" class="btn-close btn-close-white btn-sm" (click)="showDatePickerPopover = false"></button>
+      </div>
+
+      <!-- VIEW 1: YEAR GRID -->
+      @if (pickerView === 'year') {
+        <div class="text-center small text-gold mb-2 fw-bold">Step 1: Select Year</div>
+        <div class="picker-grid year-grid pe-1">
+          @for (y of yearsList; track y) {
+            <button
+              type="button"
+              class="picker-item-btn"
+              [class.active-item]="pickerYear === y"
+              (click)="selectPickerYear(y)"
+            >
+              {{ y }}
+            </button>
+          }
+        </div>
+      }
+
+      <!-- VIEW 2: MONTH GRID -->
+      @if (pickerView === 'month') {
+        <div class="text-center small text-gold mb-2 fw-bold">Step 2: Select Month ({{ pickerYear }})</div>
+        <div class="picker-grid month-grid">
+          @for (m of shortMonthsList; track $index; let idx = $index) {
+            <button
+              type="button"
+              class="picker-item-btn"
+              [class.active-item]="pickerMonth === idx"
+              (click)="selectPickerMonth(idx)"
+            >
+              {{ m }}
+            </button>
+          }
+        </div>
+      }
+
+      <!-- VIEW 3: DAY GRID WITH WEEKDAY COLUMNS -->
+      @if (pickerView === 'day') {
+        <div class="text-center small text-gold mb-2 fw-bold d-flex align-items-center justify-content-center gap-2">
+          <span>Step 3: Select Day</span>
+          <span class="badge bg-gold-soft text-gold px-2 py-1 rounded-pill x-small">{{ shortMonthsList[pickerMonth] }} {{ pickerYear }}</span>
+        </div>
+
+        <!-- Weekday Headers Header Row (Sun Mon Tue Wed Thu Fri Sat) -->
+        <div class="weekday-header-grid mb-1">
+          @for (w of weekDaysShortList; track w) {
+            <div class="weekday-label" [class.weekend-label]="w === 'Sun' || w === 'Sat'">{{ w }}</div>
+          }
+        </div>
+
+        <div class="picker-grid day-grid">
+          <!-- Offset padding empty slots -->
+          @for (pad of getFirstDayOffset(pickerYear, pickerMonth); track pad) {
+            <div class="day-pad"></div>
+          }
+
+          <!-- Days list -->
+          @for (d of getDaysInMonth(pickerYear, pickerMonth); track d) {
+            <button
+              type="button"
+              class="picker-item-btn day-btn"
+              [class.active-item]="pickerDay === d"
+              (click)="selectPickerDay(d)"
+              [title]="getDayOfWeekName(d) + ', ' + d + ' ' + shortMonthsList[pickerMonth] + ' ' + pickerYear"
+            >
+              {{ d }}
+            </button>
+          }
+        </div>
+      }
+
+    </div>
+  }
+</div>

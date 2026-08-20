@@ -1,0 +1,814 @@
+<div class="dashboard-layout" [class.sidebar-hidden]="!sidebarOpen()">
+  
+  <!-- Global Custom Loader Overlay (Prevents Double-Clicks & Displays Orbital Loader) -->
+  @if (isTeacherActionLoading()) {
+    <div class="global-custom-loader-overlay text-center">
+      <div class="custom-glow-loader custom-glow-loader-lg mb-3"></div>
+      <h5 class="fw-bold text-gold mb-1">AMHSS Teacher Portal</h5>
+      <p class="text-white-75 small mb-0">{{ actionLoadingMessage() }}</p>
+    </div>
+  }
+
+  <!-- Starry Sky & Ambient Clouds Background -->
+  @if (isBrowser) {
+    <div class="stars">
+      @for (s of stars(); track $index) {
+        <div class="star" [ngStyle]="s"></div>
+      }
+    </div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+  }
+
+  <!-- Sidebar / Drawer Side Panel -->
+  <aside class="sidebar-wrapper text-white" id="sidebar-wrapper">
+    
+    <!-- Sidebar Brand Header (Spacious Layout with Top-Right Panel Collapse Control) -->
+    <div class="sidebar-brand-spacious p-4 text-center border-bottom border-white-10 position-relative">
+      <!-- Top-Right Panel Collapse Symbol Button -->
+      <button
+        type="button"
+        class="sidebar-panel-topright-toggle-btn"
+        [disabled]="isSidebarLoading()"
+        (click)="toggleSidebar()"
+        title="Collapse Navigation Panel"
+      >
+        @if (isSidebarLoading()) {
+          <span class="custom-glow-loader spinner-xs"></span>
+        } @else {
+          <i class="bi bi-chevron-left fs-6"></i>
+        }
+      </button>
+
+      <div class="brand-icon-wrapper mb-3 mx-auto shadow-gold" (click)="triggerWave()" title="Click to wave logo!">
+        <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4L6 16V30C6 46.5 17 57.5 32 60C47 57.5 58 46.5 58 30V16L32 4Z" fill="url(#sideShieldGrad)" stroke="rgba(255,213,79,0.8)" stroke-width="2"/>
+          <path d="M32 18L18 25L32 32L46 25L32 18Z" fill="#FFD54F"/>
+          <path d="M22 28.5V36.5C22 39.5 26.5 42 32 42C37.5 42 42 39.5 42 36.5V28.5" stroke="#FFD54F" stroke-width="2.5" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="sideShieldGrad" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1A237E"/>
+              <stop offset="1" stop-color="#0D47A1"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <h5 class="fw-extrabold letter-spacing-1 text-white mb-2 brand-title-text">AMHSS ACADEMY</h5>
+      <span class="badge bg-gold-glow text-dark small fw-bold px-3 py-1 rounded-pill">
+        {{ userRole() }} Portal 2026
+      </span>
+    </div>
+
+    <!-- Navigation Options List -->
+    <div class="nav-list px-3 py-3 overflow-y-auto custom-scrollbar">
+      
+      <div class="nav-group-label text-white-50 x-small fw-bold text-uppercase px-3 mb-2">Main Navigation</div>
+      
+      <!-- Overview Welcome Page -->
+      <button
+        class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+        [class.active]="activeTab() === 'overview'"
+        [disabled]="isTabLoading() || isTeacherActionLoading()"
+        (click)="setTab('overview')"
+      >
+        <span>
+          @if (loadingTab() === 'overview') {
+            <span class="custom-glow-loader me-3"></span>
+          } @else {
+            <i class="bi bi-grid-1x2-fill me-3 text-warning"></i>
+          }
+          Overview Dashboard
+        </span>
+        <i class="bi bi-chevron-right x-small opacity-50"></i>
+      </button>
+
+      <!-- Profile -->
+      <button
+        class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+        [class.active]="activeTab() === 'profile'"
+        [disabled]="isTabLoading() || isTeacherActionLoading()"
+        (click)="setTab('profile')"
+      >
+        <span>
+          @if (loadingTab() === 'profile') {
+            <span class="custom-glow-loader me-3"></span>
+          } @else {
+            <i class="bi bi-person-badge-fill me-3 text-info"></i>
+          }
+          {{ userRole() }} Profile
+        </span>
+        <i class="bi bi-chevron-right x-small opacity-50"></i>
+      </button>
+
+      <!-- Digital ID Card -->
+      <button
+        class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+        [class.active]="activeTab() === 'idcard'"
+        [disabled]="isTabLoading() || isTeacherActionLoading()"
+        (click)="setTab('idcard')"
+      >
+        <span>
+          @if (loadingTab() === 'idcard') {
+            <span class="custom-glow-loader me-3"></span>
+          } @else {
+            <i class="bi bi-vcard-fill me-3 text-gold"></i>
+          }
+          Digital {{ userRole() }} ID
+        </span>
+        <span class="badge bg-warning text-dark x-small fw-bold rounded-pill">3D</span>
+      </button>
+
+      <!-- ADMIN SPECIFIC NAVIGATION -->
+      @if (userRole() === 'Admin') {
+        <div class="nav-group-label text-white-50 x-small fw-bold text-uppercase px-3 mt-3 mb-2">Admin Control Center</div>
+
+        <button
+          class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+          [class.active]="activeTab() === 'admin-students'"
+          [disabled]="isTabLoading() || isTeacherActionLoading()"
+          (click)="setTab('admin-students')"
+        >
+          <span>
+            @if (loadingTab() === 'admin-students') {
+              <span class="custom-glow-loader me-3"></span>
+            } @else {
+              <i class="bi bi-people-fill me-3 text-warning"></i>
+            }
+            Student Directory
+          </span>
+          <span class="badge bg-warning text-dark x-small fw-bold rounded-pill">{{ adminStudentsList().length }}</span>
+        </button>
+
+        <button
+          class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+          [class.active]="activeTab() === 'admin-teachers'"
+          [disabled]="isTabLoading() || isTeacherActionLoading()"
+          (click)="setTab('admin-teachers')"
+        >
+          <span>
+            @if (loadingTab() === 'admin-teachers') {
+              <span class="custom-glow-loader me-3"></span>
+            } @else {
+              <i class="bi bi-person-workspace me-3 text-info"></i>
+            }
+            Teacher Directory
+          </span>
+          <span class="badge bg-info text-white x-small fw-bold rounded-pill">{{ adminTeachersList().length }}</span>
+        </button>
+      }
+
+      <!-- TEACHER SPECIFIC NAVIGATION -->
+      @if (userRole() === 'Teacher') {
+        <div class="nav-group-label text-white-50 x-small fw-bold text-uppercase px-3 mt-3 mb-2">Teacher Suite</div>
+
+        <button
+          class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+          [class.active]="activeTab() === 'classes'"
+          [disabled]="isTabLoading() || isTeacherActionLoading()"
+          (click)="performTeacherAction('Loading Assigned Classes...', setTab.bind(this, 'classes'))"
+        >
+          <span>
+            @if (loadingTab() === 'classes') {
+              <span class="custom-glow-loader me-3"></span>
+            } @else {
+              <i class="bi bi-building-fill-gear me-3 text-success"></i>
+            }
+            Assigned Classes
+          </span>
+          <span class="badge bg-success text-white x-small fw-bold rounded-pill">3</span>
+        </button>
+
+        <button
+          class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+          [class.active]="activeTab() === 'attendance'"
+          [disabled]="isTabLoading() || isTeacherActionLoading()"
+          (click)="performTeacherAction('Loading Class Attendance Marker...', setTab.bind(this, 'attendance'))"
+        >
+          <span>
+            @if (loadingTab() === 'attendance') {
+              <span class="custom-glow-loader me-3"></span>
+            } @else {
+              <i class="bi bi-card-checklist me-3 text-danger"></i>
+            }
+            Class Attendance
+          </span>
+          <i class="bi bi-chevron-right x-small opacity-50"></i>
+        </button>
+      }
+
+      <!-- STUDENT SPECIFIC NAVIGATION -->
+      @if (userRole() === 'Student') {
+        <div class="nav-group-label text-white-50 x-small fw-bold text-uppercase px-3 mt-3 mb-2">Academic Suite</div>
+
+        <button
+          class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+          [class.active]="activeTab() === 'academic'"
+          [disabled]="isTabLoading() || isTeacherActionLoading()"
+          (click)="setTab('academic')"
+        >
+          <span>
+            @if (loadingTab() === 'academic') {
+              <span class="custom-glow-loader me-3"></span>
+            } @else {
+              <i class="bi bi-mortarboard-fill me-3 text-success"></i>
+            }
+            Qualifications & Grades
+          </span>
+          <i class="bi bi-chevron-right x-small opacity-50"></i>
+        </button>
+
+        <button
+          class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+          [class.active]="activeTab() === 'attendance'"
+          [disabled]="isTabLoading() || isTeacherActionLoading()"
+          (click)="setTab('attendance')"
+        >
+          <span>
+            @if (loadingTab() === 'attendance') {
+              <span class="custom-glow-loader me-3"></span>
+            } @else {
+              <i class="bi bi-pie-chart-fill me-3 text-purple"></i>
+            }
+            My Attendance
+          </span>
+          <i class="bi bi-chevron-right x-small opacity-50"></i>
+        </button>
+      }
+
+      <div class="nav-group-label text-white-50 x-small fw-bold text-uppercase px-3 mt-3 mb-2">Campus & Utilities</div>
+
+      <button
+        class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+        [class.active]="activeTab() === 'schedule'"
+        [disabled]="isTabLoading() || isTeacherActionLoading()"
+        (click)="setTab('schedule')"
+      >
+        <span>
+          @if (loadingTab() === 'schedule') {
+            <span class="custom-glow-loader me-3"></span>
+          } @else {
+            <i class="bi bi-calendar3 me-3 text-primary"></i>
+          }
+          Timetable / Schedule
+        </span>
+        <i class="bi bi-chevron-right x-small opacity-50"></i>
+      </button>
+
+      <button
+        class="nav-item-btn w-100 text-start border-0 bg-transparent text-white p-3 rounded-3 mb-1 d-flex align-items-center justify-content-between"
+        [class.active]="activeTab() === 'notices'"
+        [disabled]="isTabLoading() || isTeacherActionLoading()"
+        (click)="setTab('notices')"
+      >
+        <span>
+          @if (loadingTab() === 'notices') {
+            <span class="custom-glow-loader me-3"></span>
+          } @else {
+            <i class="bi bi-megaphone-fill me-3 text-warning"></i>
+          }
+          Notice Board
+        </span>
+        <span class="badge bg-warning text-dark x-small fw-bold rounded-pill">3 New</span>
+      </button>
+    </div>
+
+    <!-- Sidebar Bottom Footer -->
+    <div class="sidebar-footer p-3 border-top border-white-10 text-center">
+      <small class="text-white-50 x-small fw-bold letter-spacing-1">AMHSS Academic Suite v2.0</small>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper d-flex flex-column" id="main-content">
+    
+    <!-- Top Sticky Header Bar -->
+    <nav class="navbar navbar-expand navbar-dark glass-header px-4 py-3 sticky-top">
+      <div class="container-fluid p-0 d-flex align-items-center justify-content-between">
+        
+        <!-- Left: Floating Menu Opener Symbol (Appears when sidebar is collapsed) -->
+        <div class="d-flex align-items-center gap-3">
+          @if (!sidebarOpen()) {
+            <button
+              type="button"
+              class="sidebar-expand-toggle-btn shadow-gold-sm"
+              [disabled]="isSidebarLoading()"
+              (click)="toggleSidebar()"
+              title="Expand Sidebar Navigation"
+            >
+              @if (isSidebarLoading()) {
+                <span class="custom-glow-loader spinner-xs"></span>
+              } @else {
+                <i class="bi bi-list fs-5"></i>
+              }
+            </button>
+          }
+        </div>
+
+        <!-- Center: Bright High-Visibility Live Clock & Date -->
+        <div class="live-clock-pill d-flex align-items-center gap-2 px-3 py-1.5 rounded-pill shadow-lg">
+          <i class="bi bi-clock-history text-warning fs-6 clock-pulse-icon"></i>
+          <span class="live-clock-time fw-extrabold font-monospace">{{ currentTime() }}</span>
+          <span class="clock-divider">|</span>
+          <span class="live-clock-date fw-bold x-small">{{ currentDateStr() }}</span>
+        </div>
+
+        <!-- Right: Executive User Profile Badge & Top-Right Log Out Button -->
+        <div class="d-flex align-items-center gap-3">
+          <div 
+            class="user-profile-badge-exec d-flex align-items-center gap-2.5 px-3 py-1.5 rounded-pill cursor-pointer" 
+            (click)="setTab('profile')" 
+            title="View Account Profile"
+          >
+            <!-- Glowing Green Active Online Indicator (No Initial Letter) -->
+            <div class="green-status-indicator-wrap" title="Active Online Session">
+              <span class="green-status-orb"></span>
+              <span class="green-status-pulse"></span>
+            </div>
+
+            <!-- User Information Column (Name + Role Tag) -->
+            <div class="d-flex align-items-center gap-2 text-start">
+              <span class="user-name-label fw-bold text-white">{{ userName() }}</span>
+              <span 
+                class="role-tag-mini" 
+                [class.tag-admin]="userRole() === 'Admin'"
+                [class.tag-teacher]="userRole() === 'Teacher'"
+                [class.tag-student]="userRole() === 'Student'"
+              >
+                {{ userRole() }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Top-Right Redesigned Log Out Button -->
+          <button 
+            class="btn btn-topright-logout rounded-pill px-3 py-1.5 d-flex align-items-center gap-2 fw-extrabold shadow-lg"
+            [disabled]="isTeacherActionLoading() || isTabLoading()"
+            (click)="logout()"
+            title="Log Out Session"
+          >
+            <i class="bi bi-box-arrow-right text-danger"></i>
+            <span>Log Out</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Container Content (Centered Layout) -->
+    <div class="container-fluid dashboard-content-centered p-4 flex-grow-1">
+      
+      <!-- VIEW 1: WELCOME OVERVIEW PAGE -->
+      @if (activeTab() === 'overview') {
+        <div class="tab-fade-in">
+          
+          <!-- Hero Welcome Card -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="hero-card border-0 p-4 p-md-5 text-white overflow-hidden rounded-5 shadow-2xl position-relative">
+                <div class="row align-items-center position-relative z-2">
+                  <div class="col-lg-8 col-md-7 text-center text-md-start">
+                    
+                    <div class="d-flex flex-wrap align-items-center gap-2 justify-content-center justify-content-md-start mb-3">
+                      <span class="badge bg-gold-glow text-dark fw-bold px-3 py-2 rounded-pill">
+                        <i class="bi bi-stars me-1"></i> Active {{ userRole() }} Session
+                      </span>
+                      <span class="badge bg-white-10 text-white fw-semibold px-3 py-2 rounded-pill border border-white-20">
+                        <i class="bi bi-calendar-event me-1"></i> Academic Year 2026
+                      </span>
+                    </div>
+
+                    <h1 class="welcome-heading fw-extrabold mb-3">
+                      <span>{{ greetingText() }}, </span>
+                      <span class="text-gold">{{ userName() }}!</span>
+                      <span class="waving-hand ms-2 d-inline-block" [class.wave-anim]="isWaving()" (click)="triggerWave()" title="Click to wave!">👋</span>
+                    </h1>
+
+                    <p class="hero-subtext opacity-90 mb-4 leading-relaxed max-w-2xl text-white-85">
+                      @if (userRole() === 'Admin') {
+                        Welcome to your AMHSS Admin Control Panel! You have full system management access over all <strong class="text-gold">{{ adminStudentsList().length }} registered students</strong> and <strong class="text-gold">{{ adminTeachersList().length }} registered teachers</strong>.
+                      } @else if (userRole() === 'Teacher') {
+                        Welcome to your AMHSS Teacher Workspace! You are currently managing <strong class="text-gold">3 active course classes</strong> and <strong class="text-gold">115 enrolled students</strong>.
+                      } @else {
+                        Welcome to your AMHSS Student Portal! You currently have <strong class="text-gold">{{ studentData()?.qualifications?.length || 0 }} verified qualification records</strong> attached to your profile.
+                      }
+                    </p>
+
+                    <!-- Quick Navigation Buttons -->
+                    <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+                      @if (userRole() === 'Admin') {
+                        <button class="btn btn-gold rounded-pill px-4 py-2.5 fw-bold shadow-lg d-flex align-items-center gap-2" (click)="setTab('admin-students')">
+                          <i class="bi bi-people-fill"></i> Manage Students
+                        </button>
+                        <button class="btn btn-outline-glass rounded-pill px-4 py-2.5 fw-bold d-flex align-items-center gap-2" (click)="setTab('admin-teachers')">
+                          <i class="bi bi-person-workspace text-gold"></i> Manage Teachers
+                        </button>
+                      } @else if (userRole() === 'Teacher') {
+                        <button 
+                          class="btn btn-gold rounded-pill px-4 py-2.5 fw-bold shadow-lg d-flex align-items-center gap-2"
+                          [disabled]="isTeacherActionLoading() || isTabLoading()"
+                          (click)="performTeacherAction('Loading Assigned Classes...', setTab.bind(this, 'classes'))"
+                        >
+                          <i class="bi bi-building-fill-gear"></i> Manage Classes
+                        </button>
+                        <button 
+                          class="btn btn-outline-glass rounded-pill px-4 py-2.5 fw-bold d-flex align-items-center gap-2"
+                          [disabled]="isTeacherActionLoading() || isTabLoading()"
+                          (click)="performTeacherAction('Opening Attendance Marker...', setTab.bind(this, 'attendance'))"
+                        >
+                          <i class="bi bi-card-checklist text-gold"></i> Mark Attendance
+                        </button>
+                      } @else {
+                        <button class="btn btn-gold rounded-pill px-4 py-2.5 fw-bold shadow-lg d-flex align-items-center gap-2" (click)="setTab('academic')">
+                          <i class="bi bi-trophy-fill"></i> View Qualifications
+                        </button>
+                        <button class="btn btn-outline-glass rounded-pill px-4 py-2.5 fw-bold d-flex align-items-center gap-2" (click)="setTab('idcard')">
+                          <i class="bi bi-vcard-fill text-gold"></i> Digital Student ID
+                        </button>
+                      }
+                      <button class="btn btn-outline-glass rounded-pill px-4 py-2.5 fw-bold d-flex align-items-center gap-2" (click)="setTab('profile')">
+                        <i class="bi bi-person-lines-fill"></i> Full Profile
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Animated Hero Badge Graphics -->
+                  <div class="col-lg-4 col-md-5 text-center mt-4 mt-md-0 position-relative z-2">
+                    <div class="hero-avatar-badge p-4 text-center shadow-xl">
+                      <div class="student-illustration-circle mb-3 mx-auto shadow-gold">
+                        @if (userRole() === 'Admin') {
+                          <i class="bi bi-shield-lock-fill display-4 text-warning"></i>
+                        } @else if (userRole() === 'Teacher') {
+                          <i class="bi bi-person-workspace display-4 text-warning"></i>
+                        } @else {
+                          <i class="bi bi-mortarboard-fill display-4 text-warning"></i>
+                        }
+                      </div>
+                      <h6 class="fw-bold text-white mb-1">Status: Active {{ userRole() }}</h6>
+                      <p class="x-small text-white-50 mb-2">ID: {{ userRole().toUpperCase().slice(0,3) }}-{{ teacherData()?.tch_id || studentData()?.std_id || '2026' }}</p>
+                      <span class="badge bg-success rounded-pill px-3 py-1.5 fw-bold">
+                        <i class="bi bi-patch-check-fill me-1"></i> Account Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADMIN SPECIFIC OVERVIEW CARDS -->
+          @if (userRole() === 'Admin') {
+            <div class="row g-4 mb-4">
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer" (click)="setTab('admin-students')">
+                  <div class="stat-icon bg-gradient-blue text-white me-3 shadow-blue-glow">
+                    <i class="bi bi-people-fill fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">{{ adminStats()?.totalStudents || adminStudentsList().length }}</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Total Students</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer" (click)="setTab('admin-teachers')">
+                  <div class="stat-icon bg-gradient-purple text-white me-3 shadow-purple-glow">
+                    <i class="bi bi-person-workspace fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">{{ adminStats()?.totalTeachers || adminTeachersList().length }}</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Registered Teachers</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift">
+                  <div class="stat-icon bg-gradient-green text-white me-3 shadow-green-glow">
+                    <i class="bi bi-journal-bookmark-fill fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">{{ adminStats()?.activeCourses || 12 }}</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Active Courses</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift">
+                  <div class="stat-icon bg-gradient-gold text-dark me-3 shadow-gold-glow">
+                    <i class="bi bi-shield-check fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">100%</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">System Health</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- TEACHER SPECIFIC OVERVIEW CARDS -->
+          @if (userRole() === 'Teacher') {
+            <div class="row g-4 mb-4">
+              <div class="col-6 col-lg-3">
+                <div 
+                  class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer"
+                  (click)="performTeacherAction('Loading Assigned Classes...', setTab.bind(this, 'classes'))"
+                >
+                  <div class="stat-icon bg-gradient-blue text-white me-3 shadow-blue-glow">
+                    <i class="bi bi-building-fill-gear fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">3</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Assigned Classes</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div 
+                  class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer"
+                  (click)="performTeacherAction('Loading Student Roster...', setTab.bind(this, 'classes'))"
+                >
+                  <div class="stat-icon bg-gradient-purple text-white me-3 shadow-purple-glow">
+                    <i class="bi bi-people-fill fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">115</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Total Students</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer">
+                  <div class="stat-icon bg-gradient-gold text-dark me-3 shadow-gold-glow">
+                    <i class="bi bi-journal-check fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">88.4%</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Class Avg Score</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div 
+                  class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer"
+                  (click)="performTeacherAction('Opening Attendance Marker...', setTab.bind(this, 'attendance'))"
+                >
+                  <div class="stat-icon bg-gradient-mint text-white me-3 shadow-mint-glow">
+                    <i class="bi bi-card-checklist fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">Today</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Attendance Due</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- STUDENT SPECIFIC OVERVIEW CARDS -->
+          @if (userRole() === 'Student') {
+            <div class="row g-4 mb-4">
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer" (click)="setTab('academic')">
+                  <div class="stat-icon bg-gradient-blue text-white me-3 shadow-blue-glow">
+                    <i class="bi bi-journal-check fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">{{ studentData()?.qualifications?.length || 0 }}</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Qualifications</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer" (click)="setTab('attendance')">
+                  <div class="stat-icon bg-gradient-purple text-white me-3 shadow-purple-glow">
+                    <i class="bi bi-pie-chart-fill fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">95%</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Attendance Rate</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer" (click)="setTab('idcard')">
+                  <div class="stat-icon bg-gradient-gold text-dark me-3 shadow-gold-glow">
+                    <i class="bi bi-shield-check fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">Verified</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Digital ID Status</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-lg-3">
+                <div class="stat-card glass-panel p-4 rounded-4 d-flex align-items-center hover-lift cursor-pointer">
+                  <div class="stat-icon bg-gradient-mint text-white me-3 shadow-mint-glow">
+                    <i class="bi bi-cash-stack fs-3"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-extrabold text-gold mb-0">Cleared</h3>
+                    <p class="text-white-50 small mb-0 fw-semibold">Fee Account</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+        </div>
+      }
+
+      <!-- VIEW 2: PROFILE TAB -->
+      @if (activeTab() === 'profile') {
+        <div class="tab-fade-in">
+          <div class="content-card glass-panel rounded-4 border-0 p-4">
+            <h4 class="fw-extrabold text-gold mb-3">
+              <i class="bi bi-person-lines-fill me-2"></i> {{ userRole() }} Profile Details
+            </h4>
+            
+            @if (userRole() === 'Admin') {
+              <div class="row g-3 text-white">
+                <div class="col-md-6"><p><strong>Full Name:</strong> System Administrator</p></div>
+                <div class="col-md-6"><p><strong>Role:</strong> Global System Administrator</p></div>
+                <div class="col-md-6"><p><strong>Username:</strong> ssladmin</p></div>
+                <div class="col-md-6"><p><strong>Email Address:</strong> ssladmin@school.com</p></div>
+                <div class="col-md-6"><p><strong>Access Level:</strong> Full Admin (Control over Students & Teachers)</p></div>
+                <div class="col-md-6"><p><strong>Status:</strong> Active System Controller</p></div>
+              </div>
+            } @else if (userRole() === 'Teacher') {
+              <div class="row g-3 text-white">
+                <div class="col-md-6"><p><strong>First Name:</strong> {{ teacherData()?.tch_f_name || userName() }}</p></div>
+                <div class="col-md-6"><p><strong>Last Name:</strong> {{ teacherData()?.tch_l_name || '-' }}</p></div>
+                <div class="col-md-6"><p><strong>Official Email:</strong> {{ teacherData()?.tch_email_id || '-' }}</p></div>
+                <div class="col-md-6"><p><strong>Phone Number:</strong> {{ teacherData()?.tch_phno || '-' }}</p></div>
+                <div class="col-md-6"><p><strong>Department:</strong> {{ teacherData()?.tch_department || 'Computer Science' }}</p></div>
+                <div class="col-md-6"><p><strong>Specialization:</strong> {{ teacherData()?.tch_subject_spec || 'CS' }}</p></div>
+                <div class="col-md-6"><p><strong>Highest Qualification:</strong> {{ teacherData()?.tch_qualification || 'MCA' }}</p></div>
+                <div class="col-md-6"><p><strong>Experience:</strong> {{ teacherData()?.tch_experience_yrs || 4 }} Years</p></div>
+              </div>
+            } @else {
+              <div class="row g-3 text-white">
+                <div class="col-md-6"><p><strong>First Name:</strong> {{ studentData()?.std_f_name || userName() }}</p></div>
+                <div class="col-md-6"><p><strong>Last Name:</strong> {{ studentData()?.std_l_name || '-' }}</p></div>
+                <div class="col-md-6"><p><strong>Official Email:</strong> {{ studentData()?.std_email_id || '-' }}</p></div>
+                <div class="col-md-6"><p><strong>Phone Number:</strong> {{ studentData()?.std_phno || '-' }}</p></div>
+                <div class="col-md-6"><p><strong>Gender:</strong> {{ studentData()?.std_gender || '-' }}</p></div>
+                <div class="col-md-6"><p><strong>Age:</strong> {{ studentData()?.std_age || 18 }} Years</p></div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- VIEW 3: CLASSES TAB FOR TEACHER -->
+      @if (activeTab() === 'classes') {
+        <div class="tab-fade-in">
+          <div class="content-card glass-panel rounded-4 border-0 p-4">
+            <h4 class="fw-extrabold text-gold mb-3">
+              <i class="bi bi-building-fill-gear me-2"></i> My Managed Classes
+            </h4>
+            <div class="row g-4">
+              @for (cls of teacherClasses(); track cls.classCode) {
+                <div class="col-md-4">
+                  <div class="p-4 rounded-4 bg-white-05 border border-white-10 text-white">
+                    <span class="badge bg-gold-glow text-dark fw-bold mb-2">{{ cls.classCode }}</span>
+                    <h5 class="fw-bold text-white mb-2">{{ cls.className }}</h5>
+                    <p class="small text-white-75 mb-1"><i class="bi bi-people-fill me-2 text-warning"></i> Enrolled: {{ cls.studentsCount }} Students</p>
+                    <p class="small text-white-75 mb-1"><i class="bi bi-geo-alt-fill me-2 text-info"></i> Room: {{ cls.room }}</p>
+                    <p class="small text-white-75 mb-3"><i class="bi bi-clock-fill me-2 text-success"></i> Schedule: {{ cls.schedule }}</p>
+                    <button 
+                      class="btn btn-warning btn-sm rounded-pill w-100 font-weight-bold"
+                      [disabled]="isTeacherActionLoading()"
+                      (click)="performTeacherAction('Loading Class Roster for ' + cls.classCode + '...', setTab.bind(this, 'classes'))"
+                    >
+                      View Roster & Grades
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ADMIN VIEW: ALL STUDENTS DIRECTORY -->
+      @if (activeTab() === 'admin-students') {
+        <div class="tab-fade-in">
+          <div class="content-card glass-panel rounded-4 border-0 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="fw-extrabold text-gold mb-0">
+                <i class="bi bi-people-fill me-2"></i> Admin Student Directory
+              </h4>
+              <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill">
+                {{ adminStudentsList().length }} Total Students
+              </span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-dark table-hover align-middle rounded-3 overflow-hidden border border-white-10 mb-0">
+                <thead class="bg-white-10 text-gold small text-uppercase">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Student Name</th>
+                    <th scope="col">Official Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Qualifications</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (std of adminStudentsList(); track std.std_id) {
+                    <tr>
+                      <td class="fw-bold text-gold">STD-{{ std.std_id }}</td>
+                      <td class="fw-bold text-white">{{ std.std_f_name }} {{ std.std_l_name }}</td>
+                      <td class="text-white-75">{{ std.std_email_id }}</td>
+                      <td class="text-white-75">{{ std.std_phno || '-' }}</td>
+                      <td><span class="badge bg-info text-white rounded-pill">{{ std.std_gender || 'N/A' }}</span></td>
+                      <td class="text-white-75">{{ std.std_age }} Yrs</td>
+                      <td>
+                        @if (std.Qualifications && std.Qualifications.length > 0) {
+                          <span class="badge bg-gold-glow text-dark fw-bold rounded-pill">
+                            {{ std.Qualifications.length }} Course(s)
+                          </span>
+                        } @else {
+                          <span class="text-white-50 small">None</span>
+                        }
+                      </td>
+                      <td><span class="badge bg-success rounded-pill px-2.5 py-1">Active</span></td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="8" class="text-center text-white-50 py-4">No student records found in database.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ADMIN VIEW: ALL TEACHERS DIRECTORY -->
+      @if (activeTab() === 'admin-teachers') {
+        <div class="tab-fade-in">
+          <div class="content-card glass-panel rounded-4 border-0 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="fw-extrabold text-gold mb-0">
+                <i class="bi bi-person-workspace me-2"></i> Admin Teacher Directory
+              </h4>
+              <span class="badge bg-info text-white fw-bold px-3 py-2 rounded-pill">
+                {{ adminTeachersList().length }} Registered Teachers
+              </span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-dark table-hover align-middle rounded-3 overflow-hidden border border-white-10 mb-0">
+                <thead class="bg-white-10 text-gold small text-uppercase">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Teacher Name</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Subject Spec.</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Experience</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (tch of adminTeachersList(); track tch.tch_id) {
+                    <tr>
+                      <td class="fw-bold text-gold">TCH-{{ tch.tch_id }}</td>
+                      <td class="fw-bold text-white">{{ tch.tch_f_name }} {{ tch.tch_l_name }}</td>
+                      <td class="text-white-75">{{ tch.tch_department || 'Computer Sci' }}</td>
+                      <td class="text-white-75">{{ tch.tch_subject_spec || 'CS' }}</td>
+                      <td class="text-white-75">{{ tch.tch_email_id }}</td>
+                      <td class="text-white-75">{{ tch.tch_phno || '-' }}</td>
+                      <td class="text-white-75">{{ tch.tch_experience_yrs || 0 }} Yrs</td>
+                      <td><span class="badge bg-success rounded-pill px-2.5 py-1">Active</span></td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="8" class="text-center text-white-50 py-4">No teacher records found in database.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </main>
+</div>

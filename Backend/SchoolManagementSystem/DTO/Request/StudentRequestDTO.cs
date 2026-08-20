@@ -1,4 +1,4 @@
-﻿using SchoolManagementSystem.Models;
+using SchoolManagementSystem.Models;
 
 namespace SchoolManagementSystem.DTO.Request
 {
@@ -43,6 +43,6 @@ namespace SchoolManagementSystem.DTO.Request
         public string Token { get; set; } = string.Empty;
         public long std_id { get; set; }
         public string std_f_name { get; set; } = string.Empty;
-        
+        public string role { get; set; } = "Student";
     }
 }

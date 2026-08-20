@@ -1,0 +1,16 @@
+# Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.sln.ide
+
+# Node & Angular
+node_modules/
+.angular/
+dist/
+
+# Scratch/Temporary
+schoolManagementSystem/
+

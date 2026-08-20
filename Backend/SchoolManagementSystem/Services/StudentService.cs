@@ -1,4 +1,4 @@
-﻿using BCrypt.Net;
+using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SchoolManagementSystem.DTO.Request;
@@ -115,7 +115,8 @@ namespace SchoolManagementSystem.Services
                     Subject = new ClaimsIdentity(new[] {
                               new Claim("id", student.std_id.ToString()),
                               new Claim(ClaimTypes.Email, student.std_email_id),
-                              new Claim("firstName", student.std_f_name)
+                              new Claim("firstName", student.std_f_name),
+                              new Claim(ClaimTypes.Role, "Student")
                              }),
                     Expires = DateTime.UtcNow.AddMinutes(expiryminutes),
                     SigningCredentials = new SigningCredentials(
